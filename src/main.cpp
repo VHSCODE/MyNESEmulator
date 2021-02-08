@@ -1,9 +1,10 @@
 #include <iostream>
-#include "cpu.hpp"
-
+#include "NesEmu.hpp"
+#include "spdlog/spdlog.h"
 int main(int, char**) 
 {
-    auto cpu = CPU();
+    spdlog::set_level(spdlog::level::debug);
+    auto emu = NesEmu();
 
     return 0;
 }

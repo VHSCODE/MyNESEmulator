@@ -2,7 +2,7 @@
 #define UTILS_HPP
 
 
-inline int isInRange(int x, int lower, int upper)
+inline int is_in_range(int x, int lower, int upper)
 {
    return (lower <= x && x <= upper);
 }
