@@ -3,8 +3,11 @@
 #include "spdlog/fmt/bin_to_hex.h"
 #include <iostream>
 #include <vector>
+#include <string>
+#include <fstream>
 using std::array;
 using std::vector;
+using std::string;
 
 typedef char Byte;
 struct CPURegisters
@@ -21,6 +24,7 @@ class NesEmu
 
 public:
     NesEmu();
+    bool load_game(string path);
 
 private:
     CPURegisters m_cpu_regs;

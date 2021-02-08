@@ -1,10 +1,16 @@
 #include <iostream>
 #include "NesEmu.hpp"
 #include "spdlog/spdlog.h"
-int main(int, char**) 
+int main(int argc, char** argv)
 {
-    spdlog::set_level(spdlog::level::debug);
     auto emu = NesEmu();
 
-    return 0;
+    if(emu.load_game(argv[1]))
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }

@@ -1,11 +1,36 @@
 #include "NesEmu.hpp"
 #include "utils.hpp"
+
 NesEmu::NesEmu()
 {
     power_up();
     write_data(0,0);
 
     auto tmp = read_data(0);
+}
+
+bool NesEmu::load_game(std::string path)
+{
+    std::ifstream file(path,std::ios::in | std::ios::binary | std::ios::ate);
+    std::streampos size;
+    if(file.is_open())
+    {
+        size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        if(size > this->m_cartridge_memory.size())
+        {
+            spdlog::critical("Filesize too big ! Aborting...");
+            return false;
+        }
+
+        file.read(this->m_cartridge_memory.data(),size);
+        file.close();
+
+        spdlog::info("Rom loaded succesfully!");
+        return true;
+    }
+    else
+        return false;
 }
 
 void NesEmu::power_up()
