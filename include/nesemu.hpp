@@ -19,6 +19,16 @@ struct CPURegisters
     Byte P;    //Status register
 };
 
+struct EmuConfig{
+    int prg_rom_size;
+    int prg_ram_size;
+    bool mirroring; // if true vertical mirroring is enabled, if false horizontal mirroring is enabled.
+    bool battery_prg_memory;
+    bool trainer_present;
+    bool four_vram; //4 screen VRAM
+    Byte lower_nibble_mapper;
+};
+
 class NesEmu
 {
 
@@ -27,6 +37,7 @@ public:
 
 private:
     CPURegisters m_cpu_regs;
+    EmuConfig m_emu_config;
 
     /*  Memory Map
     Address range	Size	Device

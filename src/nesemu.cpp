@@ -112,6 +112,7 @@ void NesEmu::write_data(int const address,Byte const data)
 }
 Byte NesEmu::read_data(int const address)
 {
+    assert(address <= 0xFFFF);
     spdlog::info("Reading from memory address 0x{0:x}", address);
     if(is_in_range(address,0x0000, 0x07FF))
     {
@@ -162,11 +163,6 @@ Byte NesEmu::read_data(int const address)
         //APU and i/o registers
         return m_cartridge_memory.at(address - 0x4020);
     }
-    else
-    {
-        spdlog::critical("Attempted to read non-existing memory address");
-        return (Byte) -1;
-    }
 }
 
 void NesEmu::config_emu()
@@ -176,17 +172,19 @@ void NesEmu::config_emu()
     //Check the constant
     if(header.at(0) == 0x4E && header.at(1) == 0x45 && header.at(2) == 0x53 && header.at(3) == 0x1A)
     {
-        int prg_rom_size = header.at(4) + 16384;
+        m_emu_config.prg_rom_size = header.at(4) + 16384;
         if(header.at(5) != 0)
         {
-            int prg_ram_data = header.at(5) * 8192;
+           m_emu_config.prg_ram_size = header.at(5) * 8192;
         }
         std::bitset<8> flags6 = header.at(6);
 
         //Check for mirroring
-        bool horiz_mirror = flags6.test(0);
-        bool vert_mirror = flags6.test(1);
-
+        m_emu_config.mirroring = flags6.test(0);
+        m_emu_config.battery_prg_memory = flags6.test(1);
+        m_emu_config.trainer_present = flags6.test(2);
+        m_emu_config.four_vram = flags6.test(3);
+        m_emu_config.lower_nibble_mapper;
 
 
     }
