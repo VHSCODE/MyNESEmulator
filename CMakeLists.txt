@@ -4,8 +4,8 @@ project(MyNESEmulator VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-set(SRC "src/main.cpp" "src/NesEmu.cpp")
-set(HEADERS "include/NesEmu.hpp" "include/utils.hpp")
+set(SRC "src/main.cpp" "src/nesemu.cpp")
+set(HEADERS "include/nesemu.hpp" "include/utils.hpp")
 add_executable(MyNESEmulator ${SRC} ${HEADERS})
 target_include_directories(MyNESEmulator PRIVATE include/ include/spdlog)
 

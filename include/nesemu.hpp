@@ -23,8 +23,7 @@ class NesEmu
 {
 
 public:
-    NesEmu();
-    bool load_game(string path);
+    NesEmu(string path);
 
 private:
     CPURegisters m_cpu_regs;
@@ -48,8 +47,15 @@ private:
     array<Byte, 0x8> m_apu_io_func;
     array<Byte, 0xBFE0> m_cartridge_memory;
 
+    bool running;
+
+    bool isRunning() const{return running;}
+
+    bool load_game(string path);
     void power_up();
     void write_data(int const address,Byte const data);
     Byte read_data(int address);
+    vector<Byte> read_data(int from, int to);
+    void config_emu();
 
 };

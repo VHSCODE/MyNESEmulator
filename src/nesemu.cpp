@@ -1,9 +1,12 @@
-#include "NesEmu.hpp"
+#include <bitset>
+#include "nesemu.hpp"
 #include "utils.hpp"
 
-NesEmu::NesEmu()
+NesEmu::NesEmu(string path)
 {
     power_up();
+
+    running = load_game(path);
     write_data(0,0);
 
     auto tmp = read_data(0);
@@ -163,5 +166,49 @@ Byte NesEmu::read_data(int const address)
     {
         spdlog::critical("Attempted to read non-existing memory address");
         return (Byte) -1;
+    }
+}
+
+void NesEmu::config_emu()
+{
+    vector<Byte> header = read_data(0xBFE0,0xbff0);
+
+    //Check the constant
+    if(header.at(0) == 0x4E && header.at(1) == 0x45 && header.at(2) == 0x53 && header.at(3) == 0x1A)
+    {
+        int prg_rom_size = header.at(4) + 16384;
+        if(header.at(5) != 0)
+        {
+            int prg_ram_data = header.at(5) * 8192;
+        }
+        std::bitset<8> flags6 = header.at(6);
+
+        //Check for mirroring
+        bool horiz_mirror = flags6.test(0);
+        bool vert_mirror = flags6.test(1);
+
+
+
+    }
+
+    spdlog::critical("NES CONSTANT NOT FOUND. ABORTING...");
+}
+
+vector<Byte> NesEmu::read_data(int from, int to)
+{
+    assert(to > from);
+
+    spdlog::info("Reading chunk of size {} from address 0x{0:x} to 0x{0:x}",to - from,from,to);
+    std::vector<Byte> data;
+    data.reserve(to - from);
+
+    //Do not allow to read from other memory regions except the one that the from address is refering to.
+    if(is_in_range(from,0x0000,0x07FF) && is_in_range(to,0x0000,0x07FF))
+    {
+        for(int i = from; i < to; i++)
+        {
+            data.push_back(m_internal_ram.at(i));
+        }
+        return data;
     }
 }
