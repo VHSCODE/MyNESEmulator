@@ -5,7 +5,7 @@ include(CTest)
 enable_testing()
 
 set(SRC "src/main.cpp" "src/nesemu.cpp")
-set(HEADERS "include/nesemu.hpp" "include/utils.hpp")
+set(HEADERS "include/nesemu.hpp" "include/utils.hpp" include/types.h)
 add_executable(MyNESEmulator ${SRC} ${HEADERS})
 target_include_directories(MyNESEmulator PRIVATE include/ include/spdlog)
 
