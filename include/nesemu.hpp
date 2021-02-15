@@ -3,8 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include "types.h"
+#include "Memory.hpp"
 #include "cpu.hpp"
-#include "../src/Memory.hpp"
+#include <bitset>
+
 
 struct EmuConfig {
   int prg_rom_size;
@@ -26,20 +28,12 @@ class NesEmu {
   EmuConfig m_emu_config;
 
   CPU m_cpu;
-
   Memory m_memory;
-
-
 
   bool running;
 
-
-
   bool load_game(string path);
   void power_up();
-  void write_data(int const address, Byte const data);
-  Byte read_data(int address);
-  vector<Byte> read_data(int from, int to);
   void config_emu();
 
 };

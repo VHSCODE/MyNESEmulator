@@ -4,12 +4,18 @@
 
 #ifndef MYNESEMULATOR_SRC_MEMORY_HPP_
 #define MYNESEMULATOR_SRC_MEMORY_HPP_
+#define TOTAL_MEMORY_SIZE 0x0800 + 0x8 + 0x18 + 0x8 +0xBFE0
 #include "types.h"
+
 class Memory
 {
+ public:
+	void write_data(int address, Byte data);
+	Byte read_data(int address);
+	vector<Byte> read_data(int from, int to);
 
-	unique_ptr<array<Byte>> get_region(int from, int to);
-	array<Byte> get_region(int from);
+	auto data() {return m_memory.data();}
+
  private:
 	/*  Memory Map
   Address range	Size	Device
@@ -23,12 +29,7 @@ class Memory
   $4018-$401F     $0008	APU and I/O functionality that is normally disabled. See CPU Test Mode.
   $4020-$FFFF     $BFE0	Cartridge space: PRG ROM, PRG RAM, and mapper registers (See Note)
   */
-
-	array<Byte, 0x0800> m_internal_ram;
-	array<Byte, 0x8> m_ppu_registers;
-	array<Byte, 0x18> m_apu_io_registers;
-	array<Byte, 0x8> m_apu_io_func;
-	array<Byte, 0xBFE0> m_cartridge_memory;
+	array<Byte, TOTAL_MEMORY_SIZE> m_memory;
 };
 
 #endif //MYNESEMULATOR_SRC_MEMORY_HPP_

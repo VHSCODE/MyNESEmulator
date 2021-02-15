@@ -4,6 +4,7 @@
 
 #ifndef MYNESEMULATOR_TYPES_H
 #define MYNESEMULATOR_TYPES_H
+#define MAX_GAME_SIZE 0xBFE0
 #include <array>
 #include <vector>
 #include <string>
@@ -13,6 +14,7 @@ using std::array;
 using std::vector;
 using std::string;
 using std::unique_ptr;
+
 enum FileFormats{
 
     iNES,
