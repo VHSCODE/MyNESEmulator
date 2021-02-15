@@ -39,12 +39,7 @@ bool NesEmu::load_game(std::string path)
 void NesEmu::power_up()
 {
 	spdlog::info("Power up sequence initiated");
-	//The NES needs some specific values be written in order to boot up.
-	m_cpu_regs.P = 0x34;
-	m_cpu_regs.A = 0;
-	m_cpu_regs.X = 0;
-	m_cpu_regs.Y = 0;
-	m_cpu_regs.S = 0xfd;
+
 
 	write_data(0x4017, 0x00);
 	write_data(0x4015, 0x00);
