@@ -11,13 +11,13 @@ class Memory
 {
  public:
 	void write_data(int address, Byte data);
-	Byte read_data(int address);
+	Byte read_data(int address) const;
 	vector<Byte> read_data(int from, int to);
 
 	auto data() {return m_memory.data();}
 
  private:
-	/*  Memory Map
+	/*  memory Map
   Address range	Size	Device
   $0000-$07FF     $0800	2KB internal RAM
   $0800-$0FFF     $0800	Mirrors of $0000-$07FF

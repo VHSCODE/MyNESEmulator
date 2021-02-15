@@ -6,8 +6,7 @@
 #include "spdlog/spdlog.h"
 #include "assert.h"
 #include "utils.hpp"
-
-Byte Memory::read_data(int const address)
+Byte Memory::read_data(int const address) const
 {
 	assert(address <= 0xFFFF);
 	spdlog::info("Reading from memory address 0x{0:x}", address);

@@ -13,8 +13,8 @@ ExternalProject_Add(spdlog
         )
 
 
-set(SRC "src/main.cpp" "src/nesemu.cpp" "src/cpu.cpp" "src/Memory.cpp")
-set(HEADERS "include/nesemu.hpp" "include/utils.hpp" include/types.h  include/cpu.hpp  include/Memory.hpp)
+set(SRC "src/main.cpp" "src/nesemu.cpp" "src/CPU.cpp" "src/Memory.cpp" src/PPU.cpp include/PPU.hpp src/APU.cpp include/APU.hpp)
+set(HEADERS "include/nesemu.hpp" "include/utils.hpp" include/types.h include/CPU.hpp include/Memory.hpp src/PPU.cpp include/PPU.hpp src/APU.cpp include/APU.hpp)
 add_executable(MyNESEmulator ${SRC} ${HEADERS})
 add_dependencies(MyNESEmulator spdlog )
 target_include_directories(MyNESEmulator PRIVATE include/)
