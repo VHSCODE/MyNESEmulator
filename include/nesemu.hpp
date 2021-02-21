@@ -1,5 +1,3 @@
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/bin_to_hex.h"
 #include <iostream>
 #include <fstream>
 #include "types.h"
@@ -8,16 +6,19 @@
 #include "PPU.hpp"
 #include "APU.hpp"
 #include <bitset>
+#include "spdlog/spdlog.h"
 
 
 struct EmuConfig {
   int prg_rom_size;
   int prg_ram_size;
+  int chr_rom_size;
   bool mirroring; // if true ,vertical mirroring is enabled, if false , horizontal mirroring is enabled.
   bool battery_prg_memory;
   bool trainer_present;
   bool four_vram; //4 screen VRAM
   Byte lower_nibble_mapper;
+  Byte upper_nibble_mapper;
 };
 
 class NesEmu {

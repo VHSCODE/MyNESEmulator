@@ -35,6 +35,7 @@ void NesEmu::power_up()
 {
 	spdlog::info("Power up sequence initiated");
 
+	spdlog::set_level(spdlog::level::off);
 	m_memory.write_data(0x4017,0x00);
 	m_memory.write_data(0x4015, 0x00);
 
@@ -48,6 +49,9 @@ void NesEmu::power_up()
 		m_memory.write_data(j,0x0);
 
 	}
+	spdlog::set_level(spdlog::level::debug);
+
+	spdlog::info("Power up sequence finished");
 }
 
 
@@ -71,13 +75,12 @@ void NesEmu::config_emu()
 		spdlog::critical("NES CONSTANT NOT FOUND. ABORTING...");
 		return;
 	}
-
 	if (file_format == FileFormats::iNES)
 	{
 		m_emu_config.prg_rom_size = header.at(4) * 16384;
 		if (header.at(5) != 0)
 		{
-			m_emu_config.prg_ram_size = header.at(5) * 8192;
+			m_emu_config.chr_rom_size = header.at(5) * 8192;
 		}
 		std::bitset<8> flags6 = header.at(6);
 
@@ -87,6 +90,7 @@ void NesEmu::config_emu()
 		m_emu_config.trainer_present = flags6.test(2);
 		m_emu_config.four_vram = flags6.test(3);
 		m_emu_config.lower_nibble_mapper = 0;
+
 
 		std::bitset<4> lower_nibble_mapper;
 		int index = 0;
@@ -101,6 +105,36 @@ void NesEmu::config_emu()
 		m_emu_config.lower_nibble_mapper = lower_nibble_mapper.to_ulong();
 
 		std::bitset<8> flags7 = header.at(7);
+		
+		//We ignore the VS Unisystem bit and the playchoice one
+
+		bool flags_8to15_nes2_format = flags7.test(3) && !flags7.test(2) ? true : false;
+		std::bitset<4> upper_nibble_mapper;
+		
+		index = 0;
+		for (int i = 7; i >= 4; i--)
+		{
+			if (flags7.test(i))
+			{
+				upper_nibble_mapper.set(index);
+				index++;
+			}
+		}
+		m_emu_config.upper_nibble_mapper = upper_nibble_mapper.to_ulong();
+
+		if(flags_8to15_nes2_format)
+		{
+			//Nes2 format flags
+		}
+		else
+		{
+			m_emu_config.prg_ram_size = header.at(8) * 8192;
+
+		}
+	}
+	else if(file_format == FileFormats::NES_20)
+	{
+
 	}
 
 }
