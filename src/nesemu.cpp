@@ -34,7 +34,6 @@ bool NesEmu::load_game(std::string path)
 void NesEmu::power_up()
 {
 	spdlog::info("Power up sequence initiated");
-
 	spdlog::set_level(spdlog::level::off);
 	m_memory.write_data(0x4017,0x00);
 	m_memory.write_data(0x4015, 0x00);

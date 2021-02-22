@@ -21,12 +21,12 @@ void CPU::init()
 	m_cpu_regs.Y = 0;
 	m_cpu_regs.S = 0xfd;
 }
-Byte CPU::read_data(int address, unique_ptr<Memory> mem)
+Byte CPU::read_data(int address, shared_ptr<Memory> mem)
 {
 	return mem->read_data(address);
 }
 
-void CPU::write_data(int address, Byte data ,unique_ptr<Memory> mem)
+void CPU::write_data(int address, Byte data ,shared_ptr<Memory> mem)
 {
 	mem->write_data(address,data);
 }

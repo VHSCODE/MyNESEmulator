@@ -13,7 +13,7 @@ typedef char Byte;
 using std::array;
 using std::vector;
 using std::string;
-using std::unique_ptr;
+using std::shared_ptr;
 
 enum FileFormats{
 

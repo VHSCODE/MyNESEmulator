@@ -26,8 +26,8 @@ class CPU
 	CPURegisters m_cpu_regs;
 	void init();
 
-	Byte read_data(int address, unique_ptr<Memory> mem);
-	void write_data(int address,Byte data, unique_ptr<Memory> mem);
+	Byte read_data(int address, shared_ptr<Memory> mem);
+	void write_data(int address,Byte data, shared_ptr<Memory> mem);
 };
 
 #endif //MYNESEMULATOR_SRC_CPU_HPP_
