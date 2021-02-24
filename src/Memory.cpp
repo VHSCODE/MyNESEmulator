@@ -3,6 +3,7 @@
 //
 
 #include <Memory.hpp>
+#include <iostream>
 #include "spdlog/spdlog.h"
 #include "assert.h"
 #include "utils.hpp"
@@ -65,9 +66,8 @@ vector<Byte> Memory::read_data(int from, int to)
 	}
 	else if (in_range(from, 0x4020, 0xFFFF) && in_range(to, 0x4020, 0xFFFF))
 	{
-		//APU and i/o registers
-
-		for(int i = from - 0x4020; i < (to - 0x4020); i++)
+		//Cartridge space
+		for(int i = from; i < to; i++)
 		{
 			data.push_back(m_memory.at(i));
 		}
@@ -105,4 +105,26 @@ void Memory::write_data(int const address, Byte const data)
 		m_memory.at(address - offset) = data;
 	}
 	m_memory.at(address) = data;
+}
+void Memory::write_data_chunk(vector<Byte> data,int from, int size)
+{
+	spdlog::info("Writing chunk of data of size {0} from address 0x{1:x}",size,from);
+
+	int to = size;
+
+
+	assert(size <= 0xBFE0);
+	//TODO Add all the other memory regions. We shouldn't allow to write to other memory regions other that
+	// the one we are writing from. :P
+	if (in_range(from, 0x4020, 0xFFFF) && in_range(to, 0x4020, 0xFFFF))
+	{
+		int index = 0;
+
+		for(int i = from; i < to; i++)
+		{
+			m_memory.at(i) = data.at(index);
+			index++;
+		}
+	}
+
 }

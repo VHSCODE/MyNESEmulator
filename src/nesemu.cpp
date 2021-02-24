@@ -1,13 +1,15 @@
 #include "nesemu.hpp"
 NesEmu::NesEmu(string path)
 {
+
+	this->m_memory = shared_ptr<Memory>(new Memory());
 	power_up();
 
-	running = load_game(path);
+	running = load_game(path, this->m_memory);
 	config_emu();
 }
 
-bool NesEmu::load_game(std::string path)
+bool NesEmu::load_game(std::string path, shared_ptr<Memory> mem)
 {
 	std::ifstream file(path, std::ios::in | std::ios::binary | std::ios::ate);
 	std::streampos size;
@@ -21,9 +23,16 @@ bool NesEmu::load_game(std::string path)
 			return false;
 		}
 
-		file.read(m_memory.data(),size);
+		vector<Byte> buffer;
+
+		buffer.reserve(MAX_GAME_SIZE);
+
+
+		buffer.insert(buffer.begin(),std::istream_iterator<Byte>(file),std::istream_iterator<Byte>());
+
 		file.close();
 
+		mem->write_data_chunk(buffer,0x4020,size);
 		spdlog::info("Rom loaded successfully!");
 		return true;
 	}
@@ -35,17 +44,17 @@ void NesEmu::power_up()
 {
 	spdlog::info("Power up sequence initiated");
 	spdlog::set_level(spdlog::level::off);
-	m_memory.write_data(0x4017,0x00);
-	m_memory.write_data(0x4015, 0x00);
+	m_memory->write_data(0x4017,0x00);
+	m_memory->write_data(0x4015, 0x00);
 
 	for (int i = 0x4000; i < 0x4013; i++)
 	{
-		m_memory.write_data(i, 0x00);
+		m_memory->write_data(i, 0x00);
 	}
 	//The powerup values of the internal vary between consoles, in this emulator, i'll fill it with zeroes.
 	for(int j = 0x0; j < 0x07FF; j++)
 	{
-		m_memory.write_data(j,0x0);
+		m_memory->write_data(j,0x0);
 
 	}
 	spdlog::set_level(spdlog::level::debug);
@@ -57,7 +66,7 @@ void NesEmu::power_up()
 void NesEmu::config_emu()
 {
 	FileFormats file_format;
-	vector<Byte> header = m_memory.read_data(0x4020, 0x4030);
+	vector<Byte> header = m_memory->read_data(0x4020, 0x4030);
 
 	//Check the constant
 	if (header.at(0) == 'N' && header.at(1) == 'E' && header.at(2) == 'S' && header.at(3) == 0x1A)
@@ -98,8 +107,9 @@ void NesEmu::config_emu()
 			if (flags6.test(i))
 			{
 				lower_nibble_mapper.set(index);
-				index++;
+
 			}
+			index++;
 		}
 		m_emu_config.lower_nibble_mapper = lower_nibble_mapper.to_ulong();
 
@@ -107,7 +117,7 @@ void NesEmu::config_emu()
 		
 		//We ignore the VS Unisystem bit and the playchoice one
 
-		bool flags_8to15_nes2_format = flags7.test(3) && !flags7.test(2) ? true : false;
+		bool flags_8to15_nes2_format = flags7.test(3) && !flags7.test(2);
 		std::bitset<4> upper_nibble_mapper;
 		
 		index = 0;
@@ -116,8 +126,9 @@ void NesEmu::config_emu()
 			if (flags7.test(i))
 			{
 				upper_nibble_mapper.set(index);
-				index++;
+
 			}
+			index++;
 		}
 		m_emu_config.upper_nibble_mapper = upper_nibble_mapper.to_ulong();
 
@@ -130,10 +141,18 @@ void NesEmu::config_emu()
 			m_emu_config.prg_ram_size = header.at(8) * 8192;
 
 		}
+
+		print_config();
 	}
 	else if(file_format == FileFormats::NES_20)
 	{
-
+		//Not supported at this moment
+		return;
 	}
-
+}
+void NesEmu::print_config()
+{
+	spdlog::info("PRG ROM SIZE:{} Bytes", m_emu_config.prg_rom_size);
+	spdlog::info("PRG RAM SIZE:{} Bytes", m_emu_config.prg_ram_size);
+	spdlog::info("CHR ROM SIZE:{} Bytes", m_emu_config.chr_rom_size);
 }

@@ -35,12 +35,13 @@ class NesEmu {
   APU m_apu;
 
 
-  Memory m_memory;
+  shared_ptr<Memory> m_memory;
 
   bool running;
 
-  bool load_game(string path);
+  bool load_game(string path, shared_ptr<Memory> mem);
   void power_up();
   void config_emu();
 
+	void print_config();
 };

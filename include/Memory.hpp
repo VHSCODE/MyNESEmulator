@@ -11,6 +11,7 @@ class Memory
 {
  public:
 	void write_data(int address, Byte data);
+	void write_data_chunk(vector<Byte> data,int from, int size);
 	Byte read_data(int address) const;
 	vector<Byte> read_data(int from, int to);
 
